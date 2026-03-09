@@ -58,16 +58,16 @@ def check_watcher(watcher: dict):
         send_alert(
             ntfy_topic=ntfy,
             title=f"{symbol} Price Alert - HIGH",
-            message=f"{symbol} is now ${price} - above your threshold of ${above}"
+            message=f"{symbol} is now ${price} above your threshold of ${above}"
         )
     elif price < below:
         send_alert(
             ntfy_topic=ntfy,
             title=f"{symbol} Price Alert - LOW",
-            message=f"{symbol} is now ${price} - below your threshold of ${below}"
+            message=f"{symbol} is now ${price} below your threshold of ${below}"
         )
     else:
-        print(f"  Price ${price} is within range (${below} - ${above}). No alert sent.")
+        print(f"  Price ${price} is within range (${below} ${above}). No alert sent.")
 
 def main():
     for watcher in WATCHERS:
