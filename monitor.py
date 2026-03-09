@@ -5,7 +5,7 @@ import os
 WATCHERS = [
     {
         "symbol": "DELL",
-        "above":  140.00,
+        "above":  152.00,
         "below":   90.00,
         "ntfy":   os.environ.get("NTFY_TOPIC", ""),
         "name":   "Me",
