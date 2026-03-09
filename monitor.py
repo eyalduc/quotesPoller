@@ -13,15 +13,14 @@ WATCHERS = [
         "below":   90.00,       # alert if price goes BELOW this
         "ntfy":   os.environ.get("NTFY_TOPIC", ""),
         "name":   "Me",
-    },
-    # Add your father's watcher below (uncomment and edit):
-    # {
-    #     "symbol": "HTZWW",
-    #     "above":  3.00,
-    #     "below":  2.01,
-    #     "ntfy":   os.environ.get("NTFY_TOPIC_DAD", ""),
-    #     "name":   "Dad",
-    # },
+    }, 
+    {
+         "symbol": "HTZWW",
+         "above":  3.00,
+         "below":  2.01,
+         "ntfy":   os.environ.get("NTFY_TOPIC_DAD", ""),
+         "name":   "Dad",
+     },
 ]
 # ============================================================
 
