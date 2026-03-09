@@ -33,7 +33,7 @@ def get_price(symbol: str) -> float:
 
 def send_alert(ntfy_topic: str, title: str, message: str, priority: str = "high"):
     url = f"https://ntfy.sh/{ntfy_topic}"
-    print(f"  → Sending to URL: {url}")  # add this line
+    print(f"  Sending to URL: {url}")  # add this line
     headers = {
         "Title": title,
         "Priority": priority,
@@ -41,7 +41,7 @@ def send_alert(ntfy_topic: str, title: str, message: str, priority: str = "high"
     }
     response = requests.post(url, data=message.encode("utf-8"), headers=headers)
     response.raise_for_status()
-    print(f"  → Alert sent to {ntfy_topic}: {message}")
+    print(f"  Alert sent to {ntfy_topic}: {message}")
 
 def check_watcher(watcher: dict):
     symbol = watcher["symbol"]
