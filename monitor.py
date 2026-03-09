@@ -9,7 +9,7 @@ import os
 WATCHERS = [
     {
         "symbol": "DELL",
-        "above":  150.00,       # alert if price goes ABOVE this
+        "above":  140.00,       # alert if price goes ABOVE this
         "below":   90.00,       # alert if price goes BELOW this
         "ntfy":   os.environ.get("NTFY_TOPIC", ""),
         "name":   "Me",
