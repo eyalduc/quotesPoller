@@ -33,6 +33,7 @@ def get_price(symbol: str) -> float:
 
 def send_alert(ntfy_topic: str, title: str, message: str, priority: str = "high"):
     url = f"https://ntfy.sh/{ntfy_topic}"
+    print(f"  → Sending to URL: {url}")  # add this line
     headers = {
         "Title": title,
         "Priority": priority,
