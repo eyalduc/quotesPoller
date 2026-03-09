@@ -2,38 +2,33 @@ import yfinance as yf
 import requests
 import os
 
-# ============================================================
-#  WATCHERS — add or edit entries here
-#  Each watcher monitors one stock and alerts one ntfy topic
-# ============================================================
 WATCHERS = [
     {
         "symbol": "DELL",
-        "above":  140.00,       # alert if price goes ABOVE this
-        "below":   90.00,       # alert if price goes BELOW this
+        "above":  140.00,
+        "below":   90.00,
         "ntfy":   os.environ.get("NTFY_TOPIC", ""),
         "name":   "Me",
-    }, 
+    },
     {
-         "symbol": "HTZWW",
-         "above":  3.00,
-         "below":  2.01,
-         "ntfy":   os.environ.get("NTFY_TOPIC_DAD", ""),
-         "name":   "Dad",
-     },
+        "symbol": "HTZWW",
+        "above":  3.00,
+        "below":  2.01,
+        "ntfy":   os.environ.get("NTFY_TOPIC_DAD", ""),
+        "name":   "Dad",
+    },
 ]
-# ============================================================
 
-def get_price(symbol: str) -> float:
+def get_price(symbol):
     ticker = yf.Ticker(symbol)
     price = ticker.fast_info["last_price"]
     if price is None:
         raise ValueError(f"No data returned for {symbol}")
     return round(float(price), 2)
 
-def send_alert(ntfy_topic: str, title: str, message: str, priority: str = "high"):
-    url = f"https://ntfy.sh/{ntfy_topic}"
-    print(f"  Sending to URL: {url}")
+def send_alert(ntfy_topic, title, message, priority="high"):
+    url = "https://ntfy.sh/" + ntfy_topic
+    print("  Sending to URL: " + url)
     headers = {
         "Title": title,
         "Priority": priority,
@@ -41,40 +36,40 @@ def send_alert(ntfy_topic: str, title: str, message: str, priority: str = "high"
     }
     response = requests.post(url, data=message.encode("utf-8"), headers=headers)
     response.raise_for_status()
-    print(f"  Alert sent to {ntfy_topic}: {message}")
-    
-def check_watcher(watcher: dict):
+    print("  Alert sent OK")
+
+def check_watcher(watcher):
     symbol = watcher["symbol"]
     above  = watcher["above"]
     below  = watcher["below"]
     ntfy   = watcher["ntfy"]
     name   = watcher.get("name", "")
 
-    print(f"Checking {symbol} for {name}...")
+    print("Checking " + symbol + " for " + name + "...")
     price = get_price(symbol)
-    print(f"  Current price: ${price}")
+    print("  Current price: $" + str(price))
 
     if price > above:
         send_alert(
             ntfy_topic=ntfy,
-            title=f"{symbol} Price Alert HIGH",
-            message=f"{symbol} is now ${price} above your threshold of ${above}"
+            title=symbol + " Price Alert HIGH",
+            message=symbol + " is now $" + str(price) + " above your threshold of $" + str(above)
         )
     elif price < below:
         send_alert(
             ntfy_topic=ntfy,
-            title=f"{symbol} Price Alert LOW",
-            message=f"{symbol} is now ${price} below your threshold of ${below}"
+            title=symbol + " Price Alert LOW",
+            message=symbol + " is now $" + str(price) + " below your threshold of $" + str(below)
         )
     else:
-        print(f"  Price ${price} is within range (${below} ${above}). No alert sent.")
+        print("  Price $" + str(price) + " is within range. No alert sent.")
 
 def main():
     for watcher in WATCHERS:
         try:
             check_watcher(watcher)
         except Exception as e:
-            print(f"  Error checking {watcher.get('symbol')}: {e}")
+            print("  Error checking " + str(watcher.get("symbol")) + ": " + str(e))
 
 if __name__ == "__main__":
     main()
