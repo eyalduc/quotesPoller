@@ -1,5 +1,6 @@
 import yfinance as yf
 import requests
+import os
 
 # ============================================================
 #  WATCHERS — add or edit entries here
@@ -10,7 +11,7 @@ WATCHERS = [
         "symbol": "DELL",
         "above":  150.00,       # alert if price goes ABOVE this
         "below":   90.00,       # alert if price goes BELOW this
-        "ntfy":   "your-secret-topic-here",
+        "ntfy":   os.environ.get("NTFY_TOPIC", ""),
         "name":   "Me",
     },
     # Add your father's watcher below (uncomment and edit):
@@ -18,7 +19,7 @@ WATCHERS = [
     #     "symbol": "HTZWW",
     #     "above":  3.00,
     #     "below":  2.01,
-    #     "ntfy":   "dads-secret-topic-here",
+    #     "ntfy":   os.environ.get("NTFY_TOPIC_DAD", ""),
     #     "name":   "Dad",
     # },
 ]
