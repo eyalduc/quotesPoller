@@ -22,5 +22,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run price monitor
+        env:
+          NTFY_TOPIC_ME: ${{ secrets.NTFY_TOPIC_ME }}
         run: python monitor.py
-        
