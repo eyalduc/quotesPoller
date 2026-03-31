@@ -129,8 +129,11 @@ def main():
         if not topic:
             continue
             
-        title = "📈 Stock Price Alerts"
-        combined_message = "\n".join(messages)
+        # HTTP headers must be Latin-1, so avoid emojis in the Title header
+        title = "Stock Price Alerts"
+        
+        # We can safely use emojis in the message body
+        combined_message = "📈 **Market Update:**\n\n" + "\n".join(messages)
         
         print(f"\nSending bundled alert to topic '{topic}':")
         print(combined_message)
