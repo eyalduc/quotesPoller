@@ -83,11 +83,17 @@ def send_alert(ntfy_topic, title, message, priority="high"):
         
     url = "https://ntfy.sh/" + ntfy_topic
     print("  Sending to URL: " + url)
+    
+    # Ensure headers are strictly ASCII to prevent requests/urllib3 crash
+    safe_title = title.encode("ascii", "ignore").decode("ascii")
+    
     headers = {
-        "Title": title,
+        "Title": safe_title,
         "Priority": priority,
         "Tags": "chart_increasing"
     }
+    
+    # The body can contain emojis safely (encoded as UTF-8 bytes)
     response = requests.post(url, data=message.encode("utf-8"), headers=headers)
     response.raise_for_status()
     print("  Alert sent OK")
