@@ -98,8 +98,8 @@ def send_alert(ntfy_topic, title, message, priority="high"):
     response.raise_for_status()
     print("  Alert sent OK")
 
-def check_watcher(watcher) -> str:
-    """Returns an alert string if a threshold is crossed, otherwise None."""
+def check_watcher(watcher) -> tuple[str, bool]:
+    """Returns (message_string, is_triggered)."""
     symbol = watcher["symbol"]
     above  = watcher["above"]
     below  = watcher["below"]
@@ -110,29 +110,34 @@ def check_watcher(watcher) -> str:
     print(f"  Current price: ${price}")
 
     if price > above:
-        return f"🟢 {symbol}: ${price} (above ${above})"
+        return f"🟢 {symbol}: ${price} (above ${above})", True
     elif price < below:
-        return f"🔴 {symbol}: ${price} (below ${below})"
+        return f"🔴 {symbol}: ${price} (below ${below})", True
     else:
-        print(f"  Price ${price} is within range. No alert.")
-        return None
+        return f"⚪ {symbol}: ${price}", False
 
 def main():
     # Group alerts by ntfy_topic so we only send one message per phone
-    alerts_by_topic = defaultdict(list)
+    messages_by_topic = defaultdict(list)
+    topic_triggered = defaultdict(bool)
     
     for watcher in WATCHERS:
         try:
-            alert_msg = check_watcher(watcher)
-            if alert_msg:
-                topic = watcher["ntfy"]
-                alerts_by_topic[topic].append(alert_msg)
+            msg, triggered = check_watcher(watcher)
+            topic = watcher["ntfy"]
+            messages_by_topic[topic].append(msg)
+            if triggered:
+                topic_triggered[topic] = True
         except Exception as e:
             print(f"  Error checking {watcher.get('symbol')}: {e}")
 
-    # Send the bundled alerts
-    for topic, messages in alerts_by_topic.items():
+    # Send the bundled alerts ONLY if at least one stock for that topic triggered
+    for topic, messages in messages_by_topic.items():
         if not topic:
+            continue
+            
+        if not topic_triggered[topic]:
+            print(f"\nNo triggers for topic '{topic}'. Skipping notification.")
             continue
             
         # HTTP headers must be Latin-1, so avoid emojis in the Title header
